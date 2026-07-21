@@ -1,0 +1,7 @@
+groq
+networkx
+matplotlib
+python-dotenv
+pydantic
+uvicorn
+pyvis

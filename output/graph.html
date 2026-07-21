@@ -1,0 +1,127 @@
+<html>
+    <head>
+        <meta charset="utf-8">
+        
+            <script src="lib/bindings/utils.js"></script>
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/dist/vis-network.min.css" integrity="sha512-WgxfT5LWjfszlPHXRmBWHkV2eceiWTOBvrKCNbdgDYTHrT2AeLCGbF4sZlZw3UMN3WtL0tGUoIAKsu8mllg/XA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/vis-network.min.js" integrity="sha512-LnvoEWDFrqGHlHmDD2101OrLcbsfkrzoSpvtSQtxK3RMnRV0eOkhhBN2dXHKRrUU8p2DGRTk35n4O8nWSVe1mQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+            
+        
+<center>
+<h1></h1>
+</center>
+
+<!-- <link rel="stylesheet" href="../node_modules/vis/dist/vis.min.css" type="text/css" />
+<script type="text/javascript" src="../node_modules/vis/dist/vis.js"> </script>-->
+        <link
+          href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css"
+          rel="stylesheet"
+          integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6"
+          crossorigin="anonymous"
+        />
+        <script
+          src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js"
+          integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf"
+          crossorigin="anonymous"
+        ></script>
+
+
+        <center>
+          <h1></h1>
+        </center>
+        <style type="text/css">
+
+             #mynetwork {
+                 width: 100%;
+                 height: 900px;
+                 background-color: #111827;
+                 border: 1px solid lightgray;
+                 position: relative;
+                 float: left;
+             }
+
+             
+
+             
+
+             
+        </style>
+    </head>
+
+
+    <body>
+        <div class="card" style="width: 100%">
+            
+            
+            <div id="mynetwork" class="card-body"></div>
+        </div>
+
+        
+        
+
+        <script type="text/javascript">
+
+              // initialize global variables.
+              var edges;
+              var nodes;
+              var allNodes;
+              var allEdges;
+              var nodeColors;
+              var originalNodes;
+              var network;
+              var container;
+              var options, data;
+              var filter = {
+                  item : '',
+                  property : '',
+                  value : []
+              };
+
+              
+
+              
+
+              // This method is responsible for drawing the graph, returns the drawn network
+              function drawGraph() {
+                  var container = document.getElementById('mynetwork');
+
+                  
+
+                  // parsing and collecting nodes and edges from the python
+                  nodes = new vis.DataSet([{"color": "#3b82f6", "font": {"color": "white"}, "id": "Cyberpunk 2077", "label": "Cyberpunk 2077", "shape": "dot", "title": "\n                \u003cb\u003eCyberpunk 2077\u003c/b\u003e\u003cbr\u003e\n                Type: Game\n                "}, {"color": "#22c55e", "font": {"color": "white"}, "id": "CD Projekt Red", "label": "CD Projekt Red", "shape": "dot", "title": "\n                \u003cb\u003eCD Projekt Red\u003c/b\u003e\u003cbr\u003e\n                Type: Company\n                "}, {"color": "#f59e0b", "font": {"color": "white"}, "id": "REDengine 4", "label": "REDengine 4", "shape": "dot", "title": "\n                \u003cb\u003eREDengine 4\u003c/b\u003e\u003cbr\u003e\n                Type: Engine\n                "}, {"color": "#6b7280", "font": {"color": "white"}, "id": "2020", "label": "2020", "shape": "dot", "title": "\n                \u003cb\u003e2020\u003c/b\u003e\u003cbr\u003e\n                Type: Year\n                "}, {"color": "#3b82f6", "font": {"color": "white"}, "id": "Phantom Liberty", "label": "Phantom Liberty", "shape": "dot", "title": "\n                \u003cb\u003ePhantom Liberty\u003c/b\u003e\u003cbr\u003e\n                Type: Game\n                "}, {"color": "#3b82f6", "font": {"color": "white"}, "id": "The Witcher 3", "label": "The Witcher 3", "shape": "dot", "title": "\n                \u003cb\u003eThe Witcher 3\u003c/b\u003e\u003cbr\u003e\n                Type: Game\n                "}, {"color": "#f59e0b", "font": {"color": "white"}, "id": "REDengine 3", "label": "REDengine 3", "shape": "dot", "title": "\n                \u003cb\u003eREDengine 3\u003c/b\u003e\u003cbr\u003e\n                Type: Engine\n                "}, {"color": "#6b7280", "font": {"color": "white"}, "id": "2015", "label": "2015", "shape": "dot", "title": "\n                \u003cb\u003e2015\u003c/b\u003e\u003cbr\u003e\n                Type: Year\n                "}, {"color": "#3b82f6", "font": {"color": "white"}, "id": "Grand Theft Auto V", "label": "Grand Theft Auto V", "shape": "dot", "title": "\n                \u003cb\u003eGrand Theft Auto V\u003c/b\u003e\u003cbr\u003e\n                Type: Game\n                "}, {"color": "#22c55e", "font": {"color": "white"}, "id": "Rockstar Games", "label": "Rockstar Games", "shape": "dot", "title": "\n                \u003cb\u003eRockstar Games\u003c/b\u003e\u003cbr\u003e\n                Type: Company\n                "}, {"color": "#f59e0b", "font": {"color": "white"}, "id": "RAGE engine", "label": "RAGE engine", "shape": "dot", "title": "\n                \u003cb\u003eRAGE engine\u003c/b\u003e\u003cbr\u003e\n                Type: Engine\n                "}, {"color": "#6b7280", "font": {"color": "white"}, "id": "2013", "label": "2013", "shape": "dot", "title": "\n                \u003cb\u003e2013\u003c/b\u003e\u003cbr\u003e\n                Type: Year\n                "}, {"color": "#a855f7", "font": {"color": "white"}, "id": "action adventure game", "label": "action adventure game", "shape": "dot", "title": "\n                \u003cb\u003eaction adventure game\u003c/b\u003e\u003cbr\u003e\n                Type: Genre\n                "}, {"color": "#3b82f6", "font": {"color": "white"}, "id": "Red Dead Redemption 2", "label": "Red Dead Redemption 2", "shape": "dot", "title": "\n                \u003cb\u003eRed Dead Redemption 2\u003c/b\u003e\u003cbr\u003e\n                Type: Game\n                "}, {"color": "#6b7280", "font": {"color": "white"}, "id": "2018", "label": "2018", "shape": "dot", "title": "\n                \u003cb\u003e2018\u003c/b\u003e\u003cbr\u003e\n                Type: Year\n                "}, {"color": "#3b82f6", "font": {"color": "white"}, "id": "Elden Ring", "label": "Elden Ring", "shape": "dot", "title": "\n                \u003cb\u003eElden Ring\u003c/b\u003e\u003cbr\u003e\n                Type: Game\n                "}, {"color": "#22c55e", "font": {"color": "white"}, "id": "FromSoftware", "label": "FromSoftware", "shape": "dot", "title": "\n                \u003cb\u003eFromSoftware\u003c/b\u003e\u003cbr\u003e\n                Type: Company\n                "}, {"color": "#22c55e", "font": {"color": "white"}, "id": "Bandai Namco", "label": "Bandai Namco", "shape": "dot", "title": "\n                \u003cb\u003eBandai Namco\u003c/b\u003e\u003cbr\u003e\n                Type: Company\n                "}, {"color": "#6b7280", "font": {"color": "white"}, "id": "2022", "label": "2022", "shape": "dot", "title": "\n                \u003cb\u003e2022\u003c/b\u003e\u003cbr\u003e\n                Type: Year\n                "}, {"color": "#3b82f6", "font": {"color": "white"}, "id": "Sekiro: Shadows Die Twice", "label": "Sekiro: Shadows Die Twice", "shape": "dot", "title": "\n                \u003cb\u003eSekiro: Shadows Die Twice\u003c/b\u003e\u003cbr\u003e\n                Type: Game\n                "}, {"color": "#22c55e", "font": {"color": "white"}, "id": "Activision", "label": "Activision", "shape": "dot", "title": "\n                \u003cb\u003eActivision\u003c/b\u003e\u003cbr\u003e\n                Type: Company\n                "}, {"color": "#6b7280", "font": {"color": "white"}, "id": "2019", "label": "2019", "shape": "dot", "title": "\n                \u003cb\u003e2019\u003c/b\u003e\u003cbr\u003e\n                Type: Year\n                "}, {"color": "#a855f7", "font": {"color": "white"}, "id": "action soulslike game", "label": "action soulslike game", "shape": "dot", "title": "\n                \u003cb\u003eaction soulslike game\u003c/b\u003e\u003cbr\u003e\n                Type: Genre\n                "}, {"color": "#3b82f6", "font": {"color": "white"}, "id": "Hades", "label": "Hades", "shape": "dot", "title": "\n                \u003cb\u003eHades\u003c/b\u003e\u003cbr\u003e\n                Type: Game\n                "}, {"color": "#22c55e", "font": {"color": "white"}, "id": "Supergiant Games", "label": "Supergiant Games", "shape": "dot", "title": "\n                \u003cb\u003eSupergiant Games\u003c/b\u003e\u003cbr\u003e\n                Type: Company\n                "}, {"color": "#f59e0b", "font": {"color": "white"}, "id": "proprietary engine", "label": "proprietary engine", "shape": "dot", "title": "\n                \u003cb\u003eproprietary engine\u003c/b\u003e\u003cbr\u003e\n                Type: Engine\n                "}, {"color": "#a855f7", "font": {"color": "white"}, "id": "roguelike", "label": "roguelike", "shape": "dot", "title": "\n                \u003cb\u003eroguelike\u003c/b\u003e\u003cbr\u003e\n                Type: Genre\n                "}]);
+                  edges = new vis.DataSet([{"arrows": "to", "from": "Cyberpunk 2077", "label": "developed_by", "title": "developed_by", "to": "CD Projekt Red"}, {"arrows": "to", "from": "Cyberpunk 2077", "label": "uses_engine", "title": "uses_engine", "to": "REDengine 4"}, {"arrows": "to", "from": "Cyberpunk 2077", "label": "released_in", "title": "released_in", "to": "2020"}, {"arrows": "to", "from": "Cyberpunk 2077", "label": "has_expansion", "title": "has_expansion", "to": "Phantom Liberty"}, {"arrows": "to", "from": "The Witcher 3", "label": "developed_by", "title": "developed_by", "to": "CD Projekt Red"}, {"arrows": "to", "from": "The Witcher 3", "label": "uses_engine", "title": "uses_engine", "to": "REDengine 3"}, {"arrows": "to", "from": "The Witcher 3", "label": "released_in", "title": "released_in", "to": "2015"}, {"arrows": "to", "from": "Grand Theft Auto V", "label": "developed_by", "title": "developed_by", "to": "Rockstar Games"}, {"arrows": "to", "from": "Grand Theft Auto V", "label": "uses_engine", "title": "uses_engine", "to": "RAGE engine"}, {"arrows": "to", "from": "Grand Theft Auto V", "label": "released_in", "title": "released_in", "to": "2013"}, {"arrows": "to", "from": "Grand Theft Auto V", "label": "genre", "title": "genre", "to": "action adventure game"}, {"arrows": "to", "from": "Red Dead Redemption 2", "label": "developed_by", "title": "developed_by", "to": "Rockstar Games"}, {"arrows": "to", "from": "Red Dead Redemption 2", "label": "uses_engine", "title": "uses_engine", "to": "RAGE engine"}, {"arrows": "to", "from": "Red Dead Redemption 2", "label": "released_in", "title": "released_in", "to": "2018"}, {"arrows": "to", "from": "Red Dead Redemption 2", "label": "genre", "title": "genre", "to": "action adventure game"}, {"arrows": "to", "from": "Elden Ring", "label": "developed_by", "title": "developed_by", "to": "FromSoftware"}, {"arrows": "to", "from": "Elden Ring", "label": "published_by", "title": "published_by", "to": "Bandai Namco"}, {"arrows": "to", "from": "Elden Ring", "label": "released_in", "title": "released_in", "to": "2022"}, {"arrows": "to", "from": "Sekiro: Shadows Die Twice", "label": "developed_by", "title": "developed_by", "to": "FromSoftware"}, {"arrows": "to", "from": "Sekiro: Shadows Die Twice", "label": "published_by", "title": "published_by", "to": "Activision"}, {"arrows": "to", "from": "Sekiro: Shadows Die Twice", "label": "released_in", "title": "released_in", "to": "2019"}, {"arrows": "to", "from": "Sekiro: Shadows Die Twice", "label": "genre", "title": "genre", "to": "action soulslike game"}, {"arrows": "to", "from": "Hades", "label": "developed_by", "title": "developed_by", "to": "Supergiant Games"}, {"arrows": "to", "from": "Hades", "label": "uses_engine", "title": "uses_engine", "to": "proprietary engine"}, {"arrows": "to", "from": "Hades", "label": "genre", "title": "genre", "to": "roguelike"}, {"arrows": "to", "from": "Hades", "label": "released_in", "title": "released_in", "to": "2020"}]);
+
+                  nodeColors = {};
+                  allNodes = nodes.get({ returnType: "Object" });
+                  for (nodeId in allNodes) {
+                    nodeColors[nodeId] = allNodes[nodeId].color;
+                  }
+                  allEdges = edges.get({ returnType: "Object" });
+                  // adding nodes and edges to the graph
+                  data = {nodes: nodes, edges: edges};
+
+                  var options = {"interaction": {"hover": true, "navigationButtons": true, "keyboard": true}, "physics": {"enabled": true, "barnesHut": {"gravitationalConstant": -12000, "springLength": 180, "springConstant": 0.04}, "stabilization": {"iterations": 300}}, "nodes": {"shape": "dot", "size": 22, "font": {"size": 18}}, "edges": {"smooth": true, "font": {"size": 13, "align": "middle"}, "arrows": {"to": {"enabled": true}}}};
+
+                  
+
+
+                  
+
+                  network = new vis.Network(container, data, options);
+
+                  
+
+                  
+
+                  
+
+
+                  
+
+                  return network;
+
+              }
+              drawGraph();
+        </script>
+    </body>
+</html>
