@@ -1,7 +1,6 @@
 import json
 from pathlib import Path
 
-import matplotlib.pyplot as plt
 import networkx as nx
 from pyvis.network import Network
 
@@ -90,62 +89,7 @@ class GraphBuilder:
 
         print(f"\n✓ Saved JSON -> {output_path}")
 
-    # --------------------------------------------------------
-    # Static Graph (PNG)
-    # --------------------------------------------------------
-
-    def save_graph_image(self, output_path="output/graph.png"):
-
-        Path("output").mkdir(exist_ok=True)
-
-        plt.figure(figsize=(14, 10))
-
-        pos = nx.spring_layout(
-            self.graph,
-            seed=42,
-            k=1.3
-        )
-
-        nx.draw_networkx_nodes(
-            self.graph,
-            pos,
-            node_size=1800
-        )
-
-        nx.draw_networkx_labels(
-            self.graph,
-            pos,
-            font_size=8
-        )
-
-        nx.draw_networkx_edges(
-            self.graph,
-            pos,
-            arrows=True,
-            arrowsize=18
-        )
-
-        edge_labels = {
-            (u, v): d["relation"]
-            for u, v, d in self.graph.edges(data=True)
-        }
-
-        nx.draw_networkx_edge_labels(
-            self.graph,
-            pos,
-            edge_labels=edge_labels,
-            font_size=7
-        )
-
-        plt.axis("off")
-
-        plt.tight_layout()
-
-        plt.savefig(output_path, dpi=300)
-
-        plt.close()
-
-        print(f"✓ Saved PNG -> {output_path}")
+    
 
     # --------------------------------------------------------
     # Interactive Graph (HTML)
