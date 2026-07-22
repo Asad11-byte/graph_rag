@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0">
+
+    <title>GraphRAG Assistant</title>
+
+    <link
+        rel="stylesheet"
+        href="/static/style.css">
+
+</head>
+
+<body>
+
+<div class="container">
+
+    <!-- =====================================================
+         Header
+    ====================================================== -->
+
+    <header>
+
+        <div class="header-left">
+
+            <h1>🎮 GraphRAG Assistant</h1>
+
+            <p>
+                Explore game knowledge using
+                Graph Retrieval-Augmented Generation.
+            </p>
+
+        </div>
+
+        <button
+            class="graph-btn"
+            onclick="window.open('/graph', '_blank')">
+
+            View Knowledge Graph
+
+        </button>
+
+    </header>
+
+
+    <!-- =====================================================
+         Prompt Section
+    ====================================================== -->
+
+    <section class="chat">
+
+        <textarea
+
+            id="question"
+
+            placeholder="Examples:
+
+• Who developed Cyberpunk 2077?
+• Which engine does GTA V use?
+• What genre is Elden Ring?
+• Who published The Witcher 3?
+
+Type your question here..."
+
+        ></textarea>
+
+        <button id="askBtn">
+
+            Ask Question
+
+        </button>
+
+    </section>
+
+
+    <!-- =====================================================
+         AI Answer
+    ====================================================== -->
+
+    <section class="result">
+
+        <div class="card answer-card">
+
+            <h2>💬 Answer</h2>
+
+            <div id="answer">
+
+                Ask a question to begin.
+
+            </div>
+
+        </div>
+
+
+        <!-- ========================================= -->
+        <!-- Graph Information -->
+        <!-- ========================================= -->
+
+        <div class="info-grid">
+
+            <div class="card">
+
+                <h2>🎯 Extracted Entity</h2>
+
+                <p id="entity">
+
+                    -
+
+                </p>
+
+            </div>
+
+
+            <div class="card">
+
+                <h2>📍 Matched Graph Entity</h2>
+
+                <p id="matched">
+
+                    -
+
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <!-- ========================================= -->
+        <!-- Retrieved Context -->
+        <!-- ========================================= -->
+
+        <div class="card">
+
+            <h2>🧠 Retrieved Graph Context</h2>
+
+            <pre id="context">
+
+No context retrieved yet.
+
+            </pre>
+
+        </div>
+
+    </section>
+
+</div>
+
+<script src="/static/app.js"></script>
+
+</body>
+
+</html>

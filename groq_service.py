@@ -6,9 +6,17 @@ from dotenv import load_dotenv
 from groq import Groq
 from pydantic import BaseModel, ValidationError
 
-from prompts import GRAPH_EXTRACTION_PROMPT
+from prompts import (
+    GRAPH_EXTRACTION_PROMPT,
+    GRAPH_RAG_PROMPT,
+    ENTITY_EXTRACTION_PROMPT,
+)
 
 load_dotenv()
+
+MODEL_NAME = "llama-3.1-8b-instant"
+
+DEBUG = False
 
 
 class Triple(BaseModel):
@@ -18,7 +26,18 @@ class Triple(BaseModel):
 
 
 class GroqService:
+    """
+    Wrapper around the Groq API.
+
+    Responsibilities
+    ----------------
+    - Extract knowledge triples
+    - Extract entities from questions
+    - Generate GraphRAG answers
+    """
+
     def __init__(self):
+
         api_key = os.getenv("GROQ_API_KEY")
 
         if not api_key:
@@ -26,67 +45,167 @@ class GroqService:
 
         self.client = Groq(api_key=api_key)
 
-        # Reliable structured-output model
-        self.model = "llama-3.3-70b-versatile"
+        self.model = MODEL_NAME
 
-    def extract_triples(self, text: str) -> List[Triple]:
+    # ====================================================
+    # Internal Chat Helper
+    # ====================================================
+
+    def _chat(
+        self,
+        prompt: str,
+        system_prompt: str | None = None,
+    ) -> str:
         """
-        Extract knowledge triples from text using Groq.
+        Send a prompt to Groq and return the text response.
         """
 
-        prompt = GRAPH_EXTRACTION_PROMPT.format(text=text)
+        messages = []
+
+        if system_prompt:
+
+            messages.append(
+                {
+                    "role": "system",
+                    "content": system_prompt,
+                }
+            )
+
+        messages.append(
+            {
+                "role": "user",
+                "content": prompt,
+            }
+        )
 
         response = self.client.chat.completions.create(
             model=self.model,
             temperature=0,
-            messages=[
-                {
-                    "role": "system",
-                    "content": (
-                        "You are a knowledge graph extraction assistant. "
-                        "Return ONLY valid JSON."
-                    ),
-                },
-                {
-                    "role": "user",
-                    "content": prompt,
-                },
-            ],
+            messages=messages,
         )
 
-        content = response.choices[0].message.content.strip()
+        return response.choices[0].message.content.strip()
 
-        # Remove Markdown code fences if present
-        if content.startswith("```"):
-            lines = content.splitlines()
+    # ====================================================
+    # Triple Extraction
+    # ====================================================
 
-            if lines[0].startswith("```"):
-                lines = lines[1:]
+    def extract_triples(
+        self,
+        text: str,
+    ) -> List[Triple]:
+        """
+        Extract knowledge triples from text.
+        """
 
-            if lines and lines[-1].startswith("```"):
-                lines = lines[:-1]
+        prompt = GRAPH_EXTRACTION_PROMPT.format(
+            text=text
+        )
 
-            content = "\n".join(lines).strip()
+        content = self._chat(
+            prompt=prompt,
+            system_prompt=(
+                "You are a Knowledge Graph extraction assistant. "
+                "Return ONLY valid JSON."
+            ),
+        )
+
+        if DEBUG:
+            print("\n========== RAW GROQ RESPONSE ==========\n")
+            print(content)
+            print("\n=======================================\n")
+
+        # Remove Markdown code fences
+
+        content = (
+            content
+            .replace("```json", "")
+            .replace("```", "")
+            .strip()
+        )
 
         try:
+
             data = json.loads(content)
 
-        except json.JSONDecodeError as e:
-            print("\n========== GROQ RESPONSE ==========")
-            print(content)
-            print("===================================\n")
+        except json.JSONDecodeError as error:
 
             raise ValueError(
-                f"Groq returned invalid JSON: {e}"
+                f"Groq returned invalid JSON.\n\n{content}"
+            ) from error
+
+        if not isinstance(data, list):
+
+            raise ValueError(
+                "Expected a JSON array of triples."
             )
 
-        triples = []
+        triples: List[Triple] = []
 
         for item in data:
-            try:
-                triples.append(Triple(**item))
 
-            except ValidationError:
-                continue
+            try:
+
+                triples.append(
+                    Triple(**item)
+                )
+
+            except ValidationError as error:
+
+                if DEBUG:
+                    print(error)
+
+        if DEBUG:
+            print(f"\n✓ Extracted {len(triples)} triples.\n")
 
         return triples
+
+    # ====================================================
+    # Entity Extraction
+    # ====================================================
+
+    def extract_entity(
+        self,
+        question: str,
+    ) -> str:
+        """
+        Extract the main entity from the user's question.
+        """
+
+        prompt = ENTITY_EXTRACTION_PROMPT.format(
+            question=question
+        )
+
+        entity = self._chat(prompt)
+
+        entity = (
+            entity
+            .replace('"', "")
+            .replace("'", "")
+            .replace(".", "")
+            .strip()
+        )
+
+        return entity
+
+    # ====================================================
+    # GraphRAG Question Answering
+    # ====================================================
+
+    def answer_question(
+        self,
+        context: str,
+        question: str,
+    ) -> str:
+        """
+        Answer a question using only graph context.
+        """
+
+        prompt = GRAPH_RAG_PROMPT.format(
+            context=context,
+            question=question,
+        )
+
+        answer = self._chat(prompt)
+
+        return answer

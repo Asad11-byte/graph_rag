@@ -1,0 +1,384 @@
+/* ==========================================================
+   GraphRAG Theme
+========================================================== */
+
+:root{
+
+    --bg:#0f172a;
+    --surface:#162032;
+    --surface-light:#1d2b44;
+
+    --primary:#4f8cff;
+    --primary-hover:#3a75eb;
+
+    --text:#f8fafc;
+    --muted:#94a3b8;
+
+    --border:#26354d;
+
+    --success:#22c55e;
+
+    --shadow:0 12px 40px rgba(0,0,0,.35);
+
+    --radius:18px;
+
+}
+
+
+/* ==========================================================
+   Reset
+========================================================== */
+
+*{
+
+    margin:0;
+
+    padding:0;
+
+    box-sizing:border-box;
+
+}
+
+body{
+
+    background:linear-gradient(
+        180deg,
+        #09111f,
+        #0f172a
+    );
+
+    color:var(--text);
+
+    font-family:
+        "Segoe UI",
+        Arial,
+        sans-serif;
+
+    min-height:100vh;
+
+}
+
+
+/* ==========================================================
+   Container
+========================================================== */
+
+.container{
+
+    width:min(1100px,92%);
+
+    margin:auto;
+
+    padding:40px 0 60px;
+
+}
+
+
+/* ==========================================================
+   Header
+========================================================== */
+
+header{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    margin-bottom:35px;
+
+    padding-bottom:20px;
+
+    border-bottom:1px solid var(--border);
+
+}
+
+.header-left h1{
+
+    font-size:2.3rem;
+
+    margin-bottom:8px;
+
+}
+
+.header-left p{
+
+    color:var(--muted);
+
+}
+
+.graph-btn{
+
+    background:transparent;
+
+    border:1px solid var(--primary);
+
+    color:var(--primary);
+
+    padding:12px 18px;
+
+    border-radius:12px;
+
+    cursor:pointer;
+
+    transition:.25s;
+
+}
+
+.graph-btn:hover{
+
+    background:var(--primary);
+
+    color:white;
+
+}
+
+
+/* ==========================================================
+   Prompt Box
+========================================================== */
+
+.chat{
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:18px;
+
+}
+
+textarea{
+
+    background:var(--surface);
+
+    color:white;
+
+    border:1px solid var(--border);
+
+    border-radius:var(--radius);
+
+    padding:18px;
+
+    font-size:16px;
+
+    min-height:140px;
+
+    resize:vertical;
+
+    transition:.25s;
+
+}
+
+textarea:focus{
+
+    border-color:var(--primary);
+
+    outline:none;
+
+    box-shadow:0 0 0 3px rgba(79,140,255,.2);
+
+}
+
+textarea::placeholder{
+
+    color:#6c84a5;
+
+}
+
+#askBtn{
+
+    width:220px;
+
+    align-self:center;
+
+    padding:14px;
+
+    border:none;
+
+    border-radius:14px;
+
+    background:var(--primary);
+
+    color:white;
+
+    font-size:16px;
+
+    font-weight:600;
+
+    cursor:pointer;
+
+    transition:.25s;
+
+}
+
+#askBtn:hover{
+
+    background:var(--primary-hover);
+
+    transform:translateY(-2px);
+
+}
+
+
+/* ==========================================================
+   Results
+========================================================== */
+
+.result{
+
+    margin-top:40px;
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:24px;
+
+}
+
+.card{
+
+    background:var(--surface);
+
+    border:1px solid var(--border);
+
+    border-radius:var(--radius);
+
+    padding:24px;
+
+    box-shadow:var(--shadow);
+
+}
+
+.card h2{
+
+    color:var(--primary);
+
+    font-size:18px;
+
+    margin-bottom:18px;
+
+}
+
+.card p{
+
+    line-height:1.8;
+
+}
+
+
+/* ==========================================================
+   Answer Card
+========================================================== */
+
+#answer{
+
+    font-size:17px;
+
+    line-height:1.9;
+
+    color:#eef4ff;
+
+}
+
+
+/* ==========================================================
+   Context
+========================================================== */
+
+pre{
+
+    white-space:pre-wrap;
+
+    word-break:break-word;
+
+    line-height:1.8;
+
+    color:#dbeafe;
+
+    font-size:15px;
+
+}
+
+
+/* ==========================================================
+   Entity Chips
+========================================================== */
+
+#entity,
+#matched{
+
+    display:inline-block;
+
+    padding:10px 16px;
+
+    border-radius:999px;
+
+    background:#1d4ed8;
+
+    color:white;
+
+    font-weight:600;
+
+}
+
+
+/* ==========================================================
+   Footer
+========================================================== */
+
+footer{
+
+    margin-top:40px;
+
+    text-align:center;
+
+    color:var(--muted);
+
+}
+
+
+/* ==========================================================
+   Scrollbar
+========================================================== */
+
+::-webkit-scrollbar{
+
+    width:10px;
+
+}
+
+::-webkit-scrollbar-thumb{
+
+    background:#30435f;
+
+    border-radius:100px;
+
+}
+
+
+/* ==========================================================
+   Responsive
+========================================================== */
+
+@media(max-width:900px){
+
+    header{
+
+        flex-direction:column;
+
+        gap:20px;
+
+        text-align:center;
+
+    }
+
+    #askBtn{
+
+        width:100%;
+
+    }
+
+}

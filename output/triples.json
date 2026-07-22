@@ -42,17 +42,12 @@
     {
         "head": "Grand Theft Auto V",
         "relation": "uses_engine",
-        "tail": "RAGE engine"
+        "tail": "RAGE"
     },
     {
         "head": "Grand Theft Auto V",
         "relation": "released_in",
         "tail": "2013"
-    },
-    {
-        "head": "Grand Theft Auto V",
-        "relation": "genre",
-        "tail": "action adventure game"
     },
     {
         "head": "Red Dead Redemption 2",
@@ -62,17 +57,12 @@
     {
         "head": "Red Dead Redemption 2",
         "relation": "uses_engine",
-        "tail": "RAGE engine"
+        "tail": "RAGE"
     },
     {
         "head": "Red Dead Redemption 2",
         "relation": "released_in",
         "tail": "2018"
-    },
-    {
-        "head": "Red Dead Redemption 2",
-        "relation": "genre",
-        "tail": "action adventure game"
     },
     {
         "head": "Elden Ring",
@@ -105,11 +95,6 @@
         "tail": "2019"
     },
     {
-        "head": "Sekiro: Shadows Die Twice",
-        "relation": "genre",
-        "tail": "action soulslike game"
-    },
-    {
         "head": "Hades",
         "relation": "developed_by",
         "tail": "Supergiant Games"
@@ -118,11 +103,6 @@
         "head": "Hades",
         "relation": "uses_engine",
         "tail": "proprietary engine"
-    },
-    {
-        "head": "Hades",
-        "relation": "genre",
-        "tail": "roguelike"
     },
     {
         "head": "Hades",
