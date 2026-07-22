@@ -1,21 +1,21 @@
+import os
 from contextlib import asynccontextmanager
+from pathlib import Path
 
 from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 
-
-from games_data import GAME_DOCUMENTS
-
-from graph_builder import GraphBuilder
-from graph_search import GraphSearcher
-
 from community_detector import CommunityDetector
 from community_search import CommunitySearcher
-
+from games_data import GAME_DOCUMENTS
+from graph_builder import GraphBuilder
 from graph_rag_service import GraphRAGService
-
+from graph_search import GraphSearcher
 from groq_service import GroqService
+
+# Absolute path resolution for Vercel Serverless runtime
+BASE_DIR = Path(__file__).resolve().parent
 
 
 # ==========================================================
@@ -73,7 +73,6 @@ def initialize_graph(app: FastAPI):
     print("\n✓ Graph initialization completed.\n")
 
 
-
 # ==========================================================
 # Lifespan
 # ==========================================================
@@ -90,7 +89,6 @@ async def lifespan(app: FastAPI):
     )
 
 
-
 # ==========================================================
 # FastAPI Application
 # ==========================================================
@@ -102,17 +100,17 @@ app = FastAPI(
 )
 
 
-
 # ==========================================================
-# Static
+# Static Files
 # ==========================================================
 
-app.mount(
-    "/static",
-    StaticFiles(directory="static"),
-    name="static",
-)
-
+static_dir = BASE_DIR / "static"
+if static_dir.exists():
+    app.mount(
+        "/static",
+        StaticFiles(directory=str(static_dir)),
+        name="static",
+    )
 
 
 # ==========================================================
@@ -120,13 +118,12 @@ app.mount(
 # ==========================================================
 
 templates = Jinja2Templates(
-    directory="templates",
+    directory=str(BASE_DIR / "templates"),
 )
 
 
-
 # ==========================================================
-# API
+# API Routes
 # ==========================================================
 
 from api import router

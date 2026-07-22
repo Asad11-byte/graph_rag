@@ -1,10 +1,15 @@
 import json
+import os
 from pathlib import Path
 
 import networkx as nx
 from pyvis.network import Network
 
 from groq_service import Triple
+
+# Set dynamic output path based on Vercel serverless environment
+IS_VERCEL = bool(os.getenv("VERCEL") or os.getenv("AWS_LAMBDA_FUNCTION_NAME"))
+DEFAULT_OUTPUT_DIR = Path("/tmp/output") if IS_VERCEL else Path("output")
 
 
 class GraphBuilder:
@@ -62,9 +67,15 @@ class GraphBuilder:
     # Export Triples
     # --------------------------------------------------------
 
-    def save_json(self, output_path="output/triples.json"):
+    def save_json(self, output_path: str | Path | None = None):
+        """Save extracted triples to a JSON file."""
+        if output_path is None:
+            target_path = DEFAULT_OUTPUT_DIR / "triples.json"
+        else:
+            target_path = Path(output_path)
 
-        Path("output").mkdir(exist_ok=True)
+        # Ensure target directory exists in writable location
+        target_path.parent.mkdir(parents=True, exist_ok=True)
 
         triples = []
 
@@ -78,7 +89,7 @@ class GraphBuilder:
                 }
             )
 
-        with open(output_path, "w", encoding="utf-8") as file:
+        with open(target_path, "w", encoding="utf-8") as file:
 
             json.dump(
                 triples,
@@ -87,17 +98,21 @@ class GraphBuilder:
                 ensure_ascii=False
             )
 
-        print(f"\n✓ Saved JSON -> {output_path}")
-
-    
+        print(f"\n✓ Saved JSON -> {target_path}")
 
     # --------------------------------------------------------
     # Interactive Graph (HTML)
     # --------------------------------------------------------
 
-    def save_graph_html(self, output_path="output/graph.html"):
+    def save_graph_html(self, output_path: str | Path | None = None):
+        """Save PyVis interactive graph HTML."""
+        if output_path is None:
+            target_path = DEFAULT_OUTPUT_DIR / "graph.html"
+        else:
+            target_path = Path(output_path)
 
-        Path("output").mkdir(exist_ok=True)
+        # Ensure target directory exists in writable location
+        target_path.parent.mkdir(parents=True, exist_ok=True)
 
         net = Network(
             height="900px",
@@ -234,6 +249,6 @@ class GraphBuilder:
         }
         """)
 
-        net.show(output_path, notebook=False)
+        net.show(str(target_path), notebook=False)
 
-        print(f"✓ Saved Interactive Graph -> {output_path}")
+        print(f"✓ Saved Interactive Graph -> {target_path}")

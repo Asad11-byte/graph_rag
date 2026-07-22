@@ -1,3 +1,4 @@
+import os
 from pathlib import Path
 
 from fastapi import APIRouter, HTTPException, Request
@@ -10,10 +11,16 @@ from models import (
     QuestionResponse,
 )
 
+BASE_DIR = Path(__file__).resolve().parent
+
+# Set dynamic output reading path based on environment
+IS_VERCEL = bool(os.getenv("VERCEL") or os.getenv("AWS_LAMBDA_FUNCTION_NAME"))
+OUTPUT_DIR = Path("/tmp/output") if IS_VERCEL else BASE_DIR / "output"
+
 router = APIRouter()
 
 templates = Jinja2Templates(
-    directory="templates",
+    directory=str(BASE_DIR / "templates"),
 )
 
 
@@ -44,13 +51,6 @@ async def ask_question(
 ):
     """
     Main GraphRAG endpoint.
-
-    Pipeline:
-        User Question
-            ↓
-        GraphRAGService
-            ↓
-        JSON Response
     """
 
     graph_rag_service = getattr(
@@ -133,9 +133,7 @@ async def health(
 @router.get("/graph")
 async def graph():
 
-    file = Path(
-        "output/graph.html"
-    )
+    file = OUTPUT_DIR / "graph.html"
 
     if not file.exists():
 
