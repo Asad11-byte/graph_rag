@@ -1,7 +1,10 @@
-groq
-networkx
-matplotlib
-python-dotenv
-pydantic
+fastapi
 uvicorn
+jinja2
+python-dotenv
+networkx
+python-louvain
 pyvis
+groq
+pydantic
+python-multipart
