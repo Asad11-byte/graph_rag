@@ -3,11 +3,15 @@ import os
 from pathlib import Path
 
 import networkx as nx
-from pyvis.network import Network
 
 from groq_service import Triple
 
-# Set dynamic output path based on Vercel serverless environment
+# Set dynamic output path based on Vercel serverless environment.
+# Note: /tmp is writable but ephemeral — it does NOT persist across cold
+# starts or across concurrent instances. It's fine as a scratch space
+# (e.g. for save_json/save_graph_html when you deliberately want to
+# regenerate output during local development), but it must never be
+# relied on as the source of truth at request time in production.
 IS_VERCEL = bool(os.getenv("VERCEL") or os.getenv("AWS_LAMBDA_FUNCTION_NAME"))
 DEFAULT_OUTPUT_DIR = Path("/tmp/output") if IS_VERCEL else Path("output")
 
@@ -50,6 +54,51 @@ class GraphBuilder:
         return self.graph
 
     # --------------------------------------------------------
+    # Load From Precomputed JSON (fast path, no LLM calls)
+    # --------------------------------------------------------
+
+    @classmethod
+    def from_json(cls, input_path: str | Path) -> "GraphBuilder":
+        """
+        Reconstruct a graph from a previously saved triples JSON file.
+
+        This is the path that should run at application startup /
+        request time (e.g. in app.py's lifespan). It does no network
+        I/O and no disk writes — just reads a bundled data file and
+        rebuilds the in-memory graph, so it's fast and safe to run on
+        every cold start.
+
+        The JSON file itself should be produced offline by calling
+        save_json() from a local build script and committing the
+        result to the repo.
+        """
+        target_path = Path(input_path)
+
+        if not target_path.exists():
+            raise FileNotFoundError(
+                f"Precomputed graph data not found at {target_path}. "
+                "Generate it locally (e.g. via build_graph.py) and commit it."
+            )
+
+        with open(target_path, "r", encoding="utf-8") as file:
+            data = json.load(file)
+
+        builder = cls()
+
+        triples = [
+            Triple(
+                head=item["head"],
+                relation=item["relation"],
+                tail=item["tail"],
+            )
+            for item in data
+        ]
+
+        builder.build(triples)
+
+        return builder
+
+    # --------------------------------------------------------
     # Statistics
     # --------------------------------------------------------
 
@@ -68,7 +117,14 @@ class GraphBuilder:
     # --------------------------------------------------------
 
     def save_json(self, output_path: str | Path | None = None):
-        """Save extracted triples to a JSON file."""
+        """
+        Save extracted triples to a JSON file.
+
+        Intended to be run offline (e.g. from build_graph.py, on your
+        own machine or a CI job) — NOT from request-handling code on
+        Vercel. The output of this call is what from_json() reads
+        back at runtime, so commit it to the repo after regenerating.
+        """
         if output_path is None:
             target_path = DEFAULT_OUTPUT_DIR / "triples.json"
         else:
@@ -105,7 +161,19 @@ class GraphBuilder:
     # --------------------------------------------------------
 
     def save_graph_html(self, output_path: str | Path | None = None):
-        """Save PyVis interactive graph HTML."""
+        """
+        Save PyVis interactive graph HTML.
+
+        Also intended to run offline via build_graph.py — pyvis is a
+        heavy dependency and rendering is unnecessary request-time
+        work. Commit the generated HTML (e.g. to data/graph.html) and
+        serve it as a static file from app.py instead of regenerating
+        it on every request.
+        """
+        # Imported here so pyvis is only required when actually
+        # building/regenerating the visualization, not at app runtime.
+        from pyvis.network import Network
+
         if output_path is None:
             target_path = DEFAULT_OUTPUT_DIR / "graph.html"
         else:

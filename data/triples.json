@@ -1,0 +1,112 @@
+[
+    {
+        "head": "Cyberpunk 2077",
+        "relation": "developed_by",
+        "tail": "CD Projekt Red"
+    },
+    {
+        "head": "Cyberpunk 2077",
+        "relation": "uses_engine",
+        "tail": "REDengine 4"
+    },
+    {
+        "head": "Cyberpunk 2077",
+        "relation": "released_in",
+        "tail": "2020"
+    },
+    {
+        "head": "Cyberpunk 2077",
+        "relation": "has_expansion",
+        "tail": "Phantom Liberty"
+    },
+    {
+        "head": "The Witcher 3",
+        "relation": "developed_by",
+        "tail": "CD Projekt Red"
+    },
+    {
+        "head": "The Witcher 3",
+        "relation": "uses_engine",
+        "tail": "REDengine 3"
+    },
+    {
+        "head": "The Witcher 3",
+        "relation": "released_in",
+        "tail": "2015"
+    },
+    {
+        "head": "Grand Theft Auto V",
+        "relation": "developed_by",
+        "tail": "Rockstar Games"
+    },
+    {
+        "head": "Grand Theft Auto V",
+        "relation": "uses_engine",
+        "tail": "RAGE"
+    },
+    {
+        "head": "Grand Theft Auto V",
+        "relation": "released_in",
+        "tail": "2013"
+    },
+    {
+        "head": "Red Dead Redemption 2",
+        "relation": "developed_by",
+        "tail": "Rockstar Games"
+    },
+    {
+        "head": "Red Dead Redemption 2",
+        "relation": "uses_engine",
+        "tail": "RAGE"
+    },
+    {
+        "head": "Red Dead Redemption 2",
+        "relation": "released_in",
+        "tail": "2018"
+    },
+    {
+        "head": "Elden Ring",
+        "relation": "developed_by",
+        "tail": "FromSoftware"
+    },
+    {
+        "head": "Elden Ring",
+        "relation": "published_by",
+        "tail": "Bandai Namco"
+    },
+    {
+        "head": "Elden Ring",
+        "relation": "released_in",
+        "tail": "2022"
+    },
+    {
+        "head": "Sekiro: Shadows Die Twice",
+        "relation": "developed_by",
+        "tail": "FromSoftware"
+    },
+    {
+        "head": "Sekiro: Shadows Die Twice",
+        "relation": "published_by",
+        "tail": "Activision"
+    },
+    {
+        "head": "Sekiro: Shadows Die Twice",
+        "relation": "released_in",
+        "tail": "2019"
+    },
+    {
+        "head": "Hades",
+        "relation": "developed_by",
+        "tail": "Supergiant Games"
+    },
+    {
+        "head": "Hades",
+        "relation": "uses_engine",
+        "tail": "proprietary engine"
+    },
+    {
+        "head": "Hades",
+        "relation": "released_in",
+        "tail": "2020"
+    }
+]
